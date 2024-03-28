@@ -1,15 +1,16 @@
 #include <QCoreApplication>
 
 #include "service_translator.h"
+#include "connection_zmq.h"
 
 int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
 
-	service_translator translator;
+	connection_zmq zmq_network;
 
-	translator.zmq_connect();
-	translator.zmq_listen();
+	zmq_network.connect();
+	zmq_network.listen();
 
 	return a.exec();
 }

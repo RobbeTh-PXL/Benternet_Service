@@ -17,14 +17,14 @@ public:
 	connection_zmq();
 	~connection_zmq();
 
-	int zmq_connect();
-	int zmq_disconnect();
-	int zmq_listen();
+	int connect();
+	int disconnect();
+	int listen();
 
 private:
-	zmq::context_t zmq_ctx;
-	zmq::socket_t zmq_sub;
-	zmq::socket_t zmq_push;
+	zmq::context_t ctx;
+	zmq::socket_t sub;
+	zmq::socket_t push;
 	zmq::message_t zmq_msg;
 };
 

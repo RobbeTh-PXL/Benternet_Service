@@ -2,6 +2,7 @@
 #define CONNECTION_ZMQ_H
 
 #include <iostream>
+#include "service_translator.h"
 
 #include <zmq.hpp>
 #define ZMQ_NUM_IO_THREADS 1
@@ -26,6 +27,8 @@ private:
 	zmq::socket_t sub;
 	zmq::socket_t push;
 	zmq::message_t zmq_msg;
+
+	service_translator translate;
 };
 
 #endif // CONNECTION_ZMQ_H

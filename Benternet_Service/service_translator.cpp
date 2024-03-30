@@ -46,3 +46,8 @@ int service_translator::translate() {
 
 	return 0;
 }
+
+std::string service_translator::getTranslated_text() const
+{
+	return translated_text;
+}

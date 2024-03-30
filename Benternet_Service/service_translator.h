@@ -16,6 +16,8 @@ public:
 
 	int translate();
 
+	std::string getTranslated_text() const;
+
 private:
 	std::string translated_text;
 };

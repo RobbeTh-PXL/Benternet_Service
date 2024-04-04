@@ -1,7 +1,7 @@
 #ifndef SERVICE_TRANSLATOR_H
 #define SERVICE_TRANSLATOR_H
 
-#include <cpprest/http_client.h>
+#include <string>
 
 #define TRANS_SERVER "http://localhost:5000"
 #define TRANS_SERVER_ENDPOINT "/translate"

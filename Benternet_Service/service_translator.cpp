@@ -1,5 +1,5 @@
 #include "service_translator.h"
-#include <iostream>
+#include <cpprest/http_client.h>
 
 service_translator::service_translator() {}
 
@@ -29,7 +29,7 @@ std::string service_translator::translate(std::string q, std::string source, std
 	// Set the request URI
 	request.set_request_uri(request_uri);
 
-	std::string translated_text = "";
+	std::string translated_text;
 
 	try {
 		// Send the request asynchronously

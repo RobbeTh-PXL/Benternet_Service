@@ -11,6 +11,11 @@
 
 #define ZMQ_SUB_FILTER_1 "translate?"
 
+// Private struct
+struct message_data {
+	std::string id, q, source, target;
+};
+
 class connection_zmq
 {
 public:
@@ -27,7 +32,11 @@ private:
 	zmq::socket_t push;
 	zmq::message_t zmq_msg;
 
+	message_data msg_data;
+
 	service_translator translate;
+
+	int split_message(std::string message);
 };
 
 #endif // CONNECTION_ZMQ_H

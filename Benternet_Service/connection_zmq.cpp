@@ -1,4 +1,5 @@
 #include "connection_zmq.h"
+#include <iostream>
 
 connection_zmq::connection_zmq() : ctx(ZMQ_NUM_IO_THREADS), sub(ctx, ZMQ_SUB), push(ctx, ZMQ_PUSH) {}
 

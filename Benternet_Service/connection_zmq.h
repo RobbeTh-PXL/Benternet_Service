@@ -1,7 +1,6 @@
 #ifndef CONNECTION_ZMQ_H
 #define CONNECTION_ZMQ_H
 
-#include <iostream>
 #include "service_translator.h"
 
 #include <zmq.hpp>
@@ -10,7 +9,7 @@
 #define ZMQ_SERVER_PUSH_ADRESS "tcp://benternet.pxl-ea-ict.be:24041"
 #define ZMQ_SERVER_SUB_ADRESS "tcp://benternet.pxl-ea-ict.be:24042"
 
-#define ZMQ_SUB_FILTER_1 "test"
+#define ZMQ_SUB_FILTER_1 "translate?"
 
 class connection_zmq
 {

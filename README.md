@@ -110,6 +110,8 @@ translate?>[username]>[source language]-[target language]>[text to translate]>[t
 ```
 
 A list of translate commands:
-- spellcheck    -> Check and correct the spelling of the "text to translate"
+- spellcheck  -> Check and correct the spelling of the "text to translate"
 
 ## Diagram
+![comm](https://github.com/RobbeTh-PXL/Benternet_Service/assets/101119422/64e4c340-5cc3-47c1-b0f9-9b90aa45531f)
+![commflow](https://github.com/RobbeTh-PXL/Benternet_Service/assets/101119422/5529a134-eb98-4213-9524-f408cb67ee19)

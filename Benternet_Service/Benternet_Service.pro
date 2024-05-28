@@ -11,6 +11,7 @@ LIBS += -lzmq -lcpprest -lssl -lcrypto
 
 SOURCES += \
         connection_zmq.cpp \
+        handler_message.cpp \
         main.cpp \
         service_translator.cpp
 
@@ -21,4 +22,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     connection_zmq.h \
+    handler_message.h \
     service_translator.h

@@ -48,10 +48,12 @@ int connection_zmq::listen() {
 	while (sub.handle() != NULL) {
 		std::cout << "[+] ZMQ Listening..." << std::endl;
 		zmq::recv_result_t result = sub.recv(zmq_msg);
-		//DEBUG
 		if (result.has_value()) {
-			std::cout << "[+] ZMQ RX: " << std::string(static_cast<char*>(zmq_msg.data()), zmq_msg.size()) << std::endl;
-			handle_msg.split_message(std::string(static_cast<char*>(zmq_msg.data()), zmq_msg.size()));
+			std::string rx_data = std::string(static_cast<char*>(zmq_msg.data()), zmq_msg.size());
+			std::cout << "[+] ZMQ RX: " << rx_data << std::endl;
+			// Add data to handler_request queue
+			handler_req.addData_queue(rx_data);
+			handler_req.request_service();
 		} else {
 			std::cerr << "[-] ZMQ Failed to receive message." << std::endl;
 		}

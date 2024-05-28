@@ -51,11 +51,7 @@ int connection_zmq::listen() {
 		//DEBUG
 		if (result.has_value()) {
 			std::cout << "[+] ZMQ RX: " << std::string(static_cast<char*>(zmq_msg.data()), zmq_msg.size()) << std::endl;
-			std::cout << "RESPONDING: " << std::string(static_cast<char*>(zmq_msg.data()), zmq_msg.size()) << " Received" << std::endl;
-			if (push.handle() != NULL) {
-				std::string data = "got>Received: " + std::string(static_cast<char*>(zmq_msg.data()), zmq_msg.size());
-				push.send(zmq::buffer(data), zmq::send_flags::none);
-			}
+			handle_msg.split_message(std::string(static_cast<char*>(zmq_msg.data()), zmq_msg.size()));
 		} else {
 			std::cerr << "[-] ZMQ Failed to receive message." << std::endl;
 		}
@@ -64,38 +60,3 @@ int connection_zmq::listen() {
 	return 0;
 }
 
-int connection_zmq::split_message(std::string message) {
-
-	// Find the first occurrence of '>'
-	size_t pos1 = message.find('>');
-	if (pos1 != std::string::npos) {
-		// Extract user
-		msg_data.id = message.substr(0, pos1);
-
-		// Find the second occurrence of '>'
-		size_t pos2 = message.find('>', pos1 + 1);
-		if (pos2 != std::string::npos) {
-			// Extract source language and target language
-			std::string lang = message.substr(pos1 + 1, pos2 - pos1 - 1);
-			size_t hyphenPos = lang.find('-');
-			if (hyphenPos != std::string::npos) {
-				msg_data.source = lang.substr(0, hyphenPos);
-				msg_data.target = lang.substr(hyphenPos + 1);
-			}
-
-			// Extract query
-			msg_data.q = message.substr(pos2 + 1);
-
-		} else {
-			// Error: Second '>' not found
-			std::cerr << "Error: Second '>' not found." << std::endl;
-			return -1;
-		}
-	} else {
-		// Error: First '>' not found
-		std::cerr << "Error: First '>' not found." << std::endl;
-		return -1;
-	}
-
-	return 0;
-}

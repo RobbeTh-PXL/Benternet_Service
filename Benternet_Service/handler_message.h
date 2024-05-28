@@ -6,7 +6,6 @@
 #define LIST_LANG_CMD "langs"
 #define DETECT_LANG_CMD "detect"
 
-// Private struct
 struct message_data {
 	int op;
 	std::string id, q, source, target, cmd, cmd_arg;

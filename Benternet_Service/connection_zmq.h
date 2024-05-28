@@ -29,6 +29,8 @@ private:
 	zmq::message_t zmq_msg;
 
 	handler_requests handler_req;
+
+	int push_msg();
 };
 
 #endif // CONNECTION_ZMQ_H

@@ -3,7 +3,7 @@ QT = core
 CONFIG += c++17 cmdline
 
 DEFINES += ZMQ_STATIC
-LIBS += -lzmq
+LIBS += -lzmq -lcpprest -lssl -lcrypto
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -11,8 +11,11 @@ LIBS += -lzmq
 
 SOURCES += \
         connection_zmq.cpp \
+        handler_message.cpp \
+        handler_requests.cpp \
         main.cpp \
-        service_translator.cpp
+        service_translator.cpp \
+        shared_control.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -21,4 +24,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     connection_zmq.h \
-    service_translator.h
+    handler_message.h \
+    handler_requests.h \
+    service_translator.h \
+    shared_control.h

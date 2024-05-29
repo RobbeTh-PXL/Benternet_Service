@@ -17,17 +17,18 @@ public:
 	handler_requests();
 	~handler_requests();
 
-	int request_service();
+	void request_service();
 
-	void addData_queue_item(std::string entry);
+	void addRequest_queue_item(std::string entry);
 	response_data getResponse_queue_item() const;
+	int getResponse_queu_size() const;
 	void popResponse_queue_item();
 
 private:
 	handler_message handle_msg;
 	service_translator translate;
-	std::list<std::string> request_queue;
-	std::list<response_data> response_queue;
+	static std::list<std::string> request_queue;
+	static std::list<response_data> response_queue;
 };
 
 #endif // HANDLER_REQUESTS_H

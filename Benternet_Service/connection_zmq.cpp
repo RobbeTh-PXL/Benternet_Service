@@ -57,6 +57,8 @@ int connection_zmq::listen() {
 			handler_req.addData_queue_item(rx_data);
 			if (handler_req.request_service() == 0) {
 				push_msg();
+			} else {
+				std::cerr << "[-] Error requesting service." << std::endl;
 			}
 		} else {
 			std::cerr << "[-] ZMQ Failed to receive message." << std::endl;

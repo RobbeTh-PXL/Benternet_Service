@@ -132,9 +132,9 @@ std::string service_translator::langs(std::string request_language) {
 
 	// Format the languages as a single string
 	std::ostringstream oss;
-	oss << "Languages for " << request_language << ":" << std::endl;
+	//oss << "Languages for " << request_language << ":" << std::endl;
 	for (const auto& language_it : response_languages) {
-		oss << language_it << " ";
+		oss << language_it << ",";
 	}
 	oss << std::endl;
 	return oss.str();

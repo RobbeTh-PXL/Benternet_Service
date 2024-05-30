@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow
 public:
 	MainWindow(QWidget *parent = nullptr);
 	~MainWindow();
+	void incoming_msg();
 
 private slots:
 	void input_connect_clicked();
@@ -35,10 +36,15 @@ private:
 	std::string getUsername();
 	std::string getSourceLanguage();
 	void setTargetLanguage();
+	std::string getTargetLanguage();
 	std::string getTextInput();
 
 	std::string username;
 	bool connected = false;
+	bool request_translate = false;
+	bool request_langs = false;
+	std::string source_lang;
+	std::string target_lang;
 	QList<QString> lang_list;
 
 	zmq::context_t ctx;
@@ -46,7 +52,6 @@ private:
 	zmq::socket_t push;
 	zmq::message_t zmq_msg;
 
-	void incoming_msg();
 	void send_msg(std::string msg);
 };
 #endif // MAINWINDOW_H

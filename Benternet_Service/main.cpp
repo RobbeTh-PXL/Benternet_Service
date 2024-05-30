@@ -18,6 +18,10 @@ int main(int argc, char *argv[])
 	});
 
 	std::thread zmq_push([&zmq_network]() {
+		zmq_network.send_heartbeat();
+	});
+
+	std::thread zmq_heartbeat([&zmq_network]() {
 		zmq_network.push_msg();
 	});
 

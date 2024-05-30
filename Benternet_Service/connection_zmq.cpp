@@ -1,10 +1,13 @@
 #include "connection_zmq.h"
+#include "shared_control.h"
+
 #include <iostream>
 #include <string.h>
 #include <sstream>
-#include "shared_control.h"
+#include <thread>
+#include <chrono>
 
-connection_zmq::connection_zmq() : ctx(ZMQ_NUM_IO_THREADS), sub(ctx, ZMQ_SUB), push(ctx, ZMQ_PUSH) {}
+connection_zmq::connection_zmq() : ctx(ZMQ_NUM_IO_THREADS), sub(ctx, ZMQ_SUB), push(ctx, ZMQ_PUSH), heartbeat(ctx, ZMQ_PUSH) {}
 
 connection_zmq::~connection_zmq() {
 	disconnect();
@@ -19,6 +22,7 @@ int connection_zmq::connect() {
 		sub.connect(ZMQ_SERVER_SUB_ADRESS);
 		std::cout << "[+] Connecting To: " << ZMQ_SERVER_PUSH_ADRESS << std::endl;
 		push.connect(ZMQ_SERVER_PUSH_ADRESS);
+		heartbeat.connect(ZMQ_SERVER_PUSH_ADRESS);
 		std::cout << "[+] Connected To Server " << std::endl;
 	} catch (const zmq::error_t& e) {
 		std::cerr << "[-] ZMQ Error: " << e.what() << std::endl;
@@ -90,4 +94,14 @@ void connection_zmq::push_msg() {
 		}
 	}
 	std::cout << "[-] Push Thread exited" << std::endl;
+}
+
+void connection_zmq::send_heartbeat() {
+	std::cout << "[+] Heartbeat Thread started" << std::endl;
+	while (heartbeat.handle() != NULL) {
+		heartbeat.send(zmq::buffer("Heart"), zmq::send_flags::none);
+		// Sleep for 10 seconds
+		std::this_thread::sleep_for(std::chrono::seconds(10));
+	}
+	std::cout << "[-] Heartbeat Thread exited" << std::endl;
 }

@@ -18,6 +18,7 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+
 LIBS += -lzmq
 
 # Default rules for deployment.

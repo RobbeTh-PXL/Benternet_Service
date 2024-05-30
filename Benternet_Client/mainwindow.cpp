@@ -14,8 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->input_lang_source, &QComboBox::currentIndexChanged, this, &MainWindow::input_lang_source_selected);
 }
 
-
-
 MainWindow::~MainWindow()
 {
 	delete ui;
@@ -172,5 +170,3 @@ void MainWindow::send_msg(std::string msg)
 		QMessageBox::warning(this, "Error", "Could not push message");
 	}
 }
-
-

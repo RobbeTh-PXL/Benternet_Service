@@ -14,6 +14,7 @@
 
 #define ZMQ_SUB_FILTER_1 "translate?"
 #define ZMQ_PUSH_FILTER_1 "translate!"
+#define ZMQ_HEARTBEAT_FILTER_1 "translate*"
 
 class connection_zmq
 {
@@ -25,11 +26,13 @@ public:
 	int disconnect();
 	void listen();
 	void push_msg();
+	void send_heartbeat();
 
 private:
 	zmq::context_t ctx;
 	zmq::socket_t sub;
 	zmq::socket_t push;
+	zmq::socket_t heartbeat;
 	zmq::message_t zmq_msg;
 
 	handler_requests handler_req;

@@ -71,7 +71,7 @@ std::string service_translator::translate(std::string q, std::string source, std
 	return translated_text;
 }
 
-std::string service_translator::langs(std::string language) {
+std::string service_translator::langs(std::string request_language) {
 	std::cout << "[+] Fetching Languages Started" << std::endl;
 	web::http::client::http_client client(U(TRANS_SERVER));
 
@@ -89,7 +89,7 @@ std::string service_translator::langs(std::string language) {
 	// Set the request URI
 	request.set_request_uri(request_uri);
 
-	std::vector<std::string> languages;
+	std::vector<std::string> response_languages;
 
 	try {
 		// Send the request asynchronously
@@ -102,16 +102,16 @@ std::string service_translator::langs(std::string language) {
 									   // If the request failed, set an error
 									   throw std::runtime_error("Request failed with status code " + std::to_string(response.status_code()));
 								   }
-							   }).then([&languages, &language](web::json::value responseBody) {
+							   }).then([&response_languages, &request_language](web::json::value responseBody) {
 				// Check if the response is an array
 				if (responseBody.is_array()) {
 					for (auto& lang : responseBody.as_array()) {
 						// Check if the object has the field "code" with value "en"
-						if (lang.has_field(U(LANG_RESULT_LIST_ID)) && lang[U(LANG_RESULT_LIST_ID)].as_string() == U(language)) {
+						if (lang.has_field(U(LANG_RESULT_LIST_ID)) && lang[U(LANG_RESULT_LIST_ID)].as_string() == U(request_language)) {
 							// Check if the object has the field "languages"
 							if (lang.has_field(U(LANG_RESULT_LIST_ITEMS)) && lang[U(LANG_RESULT_LIST_ITEMS)].is_array()) {
 								for (auto& language : lang[U(LANG_RESULT_LIST_ITEMS)].as_array()) {
-									languages.push_back(language.as_string());
+									response_languages.push_back(language.as_string());
 								}
 							}
 							break; // No need to continue once we've found the "en" entry
@@ -132,9 +132,9 @@ std::string service_translator::langs(std::string language) {
 
 	// Format the languages as a single string
 	std::ostringstream oss;
-	oss << "Languages for " << language << ":" << std::endl;
-	for (const auto& language : languages) {
-		oss << language << " ";
+	oss << "Languages for " << request_language << ":" << std::endl;
+	for (const auto& language_it : response_languages) {
+		oss << language_it << " ";
 	}
 	oss << std::endl;
 	return oss.str();

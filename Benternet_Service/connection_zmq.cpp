@@ -1,9 +1,13 @@
 #include "connection_zmq.h"
+#include "shared_control.h"
+
 #include <iostream>
 #include <string.h>
 #include <sstream>
+#include <thread>
+#include <chrono>
 
-connection_zmq::connection_zmq() : ctx(ZMQ_NUM_IO_THREADS), sub(ctx, ZMQ_SUB), push(ctx, ZMQ_PUSH) {}
+connection_zmq::connection_zmq() : ctx(ZMQ_NUM_IO_THREADS), sub(ctx, ZMQ_SUB), push(ctx, ZMQ_PUSH), heartbeat(ctx, ZMQ_PUSH) {}
 
 connection_zmq::~connection_zmq() {
 	disconnect();
@@ -18,6 +22,7 @@ int connection_zmq::connect() {
 		sub.connect(ZMQ_SERVER_SUB_ADRESS);
 		std::cout << "[+] Connecting To: " << ZMQ_SERVER_PUSH_ADRESS << std::endl;
 		push.connect(ZMQ_SERVER_PUSH_ADRESS);
+		heartbeat.connect(ZMQ_SERVER_PUSH_ADRESS);
 		std::cout << "[+] Connected To Server " << std::endl;
 	} catch (const zmq::error_t& e) {
 		std::cerr << "[-] ZMQ Error: " << e.what() << std::endl;
@@ -46,7 +51,8 @@ int connection_zmq::disconnect() {
 	return 0;
 }
 
-int connection_zmq::listen() {
+void connection_zmq::listen() {
+	std::cout << "[+] Listen Thread started" << std::endl;
 	while (sub.handle() != NULL) {
 		std::cout << "[+] ZMQ Listening..." << std::endl;
 		zmq::recv_result_t result = sub.recv(zmq_msg);
@@ -54,36 +60,48 @@ int connection_zmq::listen() {
 			std::string rx_data = std::string(static_cast<char*>(zmq_msg.data()), zmq_msg.size());
 			std::cout << "[+] ZMQ RX: " << rx_data << std::endl;
 			// Add data to handler_request queue
-			handler_req.addData_queue_item(rx_data);
-			if (handler_req.request_service() == 0) {
-				push_msg();
-			} else {
-				std::cerr << "[-] Error requesting service." << std::endl;
-			}
+			shared_control::lock_request_queue();
+			handler_req.addRequest_queue_item(rx_data);
+			shared_control::unlock_request_queue();
 		} else {
 			std::cerr << "[-] ZMQ Failed to receive message." << std::endl;
 		}
 	}
-
-	return 0;
+	std::cout << "[-] Listen Thread exited" << std::endl;
 }
 
-int connection_zmq::push_msg() {
-	if (push.handle() != NULL) {
-		// Get response
-		response_data data = handler_req.getResponse_queue_item();
-		if (!data.id.empty() || !data.response.empty()) {
-			// Put together response
-			std::ostringstream oss;
-			oss << ZMQ_PUSH_FILTER_1 << ">" << data.id << ">" << data.response;
-			std::string msg = oss.str();
-
-			push.send(zmq::buffer(msg), zmq::send_flags::none);
-			std::cout << "ZMQ TX: " << msg << std::endl;
-
+void connection_zmq::push_msg() {
+	std::cout << "[+] Push Thread started" << std::endl;
+	while (push.handle() != NULL) {
+		shared_control::lock_response_queue();
+		if (handler_req.getResponse_queu_size() > 0) {
+			// Get response
+			response_data data = handler_req.getResponse_queue_item();
 			handler_req.popResponse_queue_item();
+			shared_control::unlock_response_queue();
+			if (!data.id.empty() || !data.response.empty()) {
+				// Put together response
+				std::ostringstream oss;
+				oss << ZMQ_PUSH_FILTER_1 << ">" << data.id << ">" << data.response;
+				std::string msg = oss.str();
+
+				push.send(zmq::buffer(msg), zmq::send_flags::none);
+				std::cout << "ZMQ TX: " << msg << std::endl;
+
+			} else {
+				continue;
+			}
 		}
 	}
+	std::cout << "[-] Push Thread exited" << std::endl;
+}
 
-	return 0;
+void connection_zmq::send_heartbeat() {
+	std::cout << "[+] Heartbeat Thread started" << std::endl;
+	while (heartbeat.handle() != NULL) {
+		heartbeat.send(zmq::buffer("Heart"), zmq::send_flags::none);
+		// Sleep for 10 seconds
+		std::this_thread::sleep_for(std::chrono::seconds(10));
+	}
+	std::cout << "[-] Heartbeat Thread exited" << std::endl;
 }

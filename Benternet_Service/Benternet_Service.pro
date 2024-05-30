@@ -14,7 +14,8 @@ SOURCES += \
         handler_message.cpp \
         handler_requests.cpp \
         main.cpp \
-        service_translator.cpp
+        service_translator.cpp \
+        shared_control.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -25,4 +26,5 @@ HEADERS += \
     connection_zmq.h \
     handler_message.h \
     handler_requests.h \
-    service_translator.h
+    service_translator.h \
+    shared_control.h

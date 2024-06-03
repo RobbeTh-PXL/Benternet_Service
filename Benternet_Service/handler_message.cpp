@@ -44,6 +44,26 @@ int handler_message::split_message(std::string message) {
 				msg_data.op = 2;
 				msg_data.cmd = message.substr(pos2 + 1, sizeof(LIST_LANG_CMD) - 1);
 			} else {
+				for (const auto& cmd : lang_cmd) {
+					cmdPos = message.find(cmd, pos2 + 1);
+					if (cmdPos != std::string::npos && cmdPos < pos3) {
+						std::cout << "lang_cmd foud" << std::endl;
+						msg_data.op = 0;
+						msg_data.source = "en";
+						// sizeof(cmd) returns target=%3E10
+						msg_data.target = message.substr(pos2 + 1, 2);
+						msg_data.cmd_arg = message.substr(pos3 + 1);
+						if (std::stoul(msg_data.cmd_arg) > sizeof(lyrics) || std::stoul(msg_data.cmd_arg) <= 0) {
+							std::cerr << "input too large!" << std::endl;
+							return 1;
+						} else {
+							msg_data.q = lyrics.substr(0, std::stoul(msg_data.cmd_arg));
+							return 0;
+						}
+					} else {
+						continue;
+					}
+				}
 				std::cerr << "No command found!" << std::endl;
 				return 1;
 			}

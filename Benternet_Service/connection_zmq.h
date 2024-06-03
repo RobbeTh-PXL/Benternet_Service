@@ -6,11 +6,11 @@
 #include <zmq.hpp>
 #define ZMQ_NUM_IO_THREADS 1
 
-//#define ZMQ_SERVER_PUSH_ADRESS "tcp://benternet.pxl-ea-ict.be:24041"
-//#define ZMQ_SERVER_SUB_ADRESS "tcp://benternet.pxl-ea-ict.be:24042"
+#define ZMQ_SERVER_PUSH_ADRESS "tcp://benternet.pxl-ea-ict.be:24041"
+#define ZMQ_SERVER_SUB_ADRESS "tcp://benternet.pxl-ea-ict.be:24042"
 
-#define ZMQ_SERVER_PUSH_ADRESS "tcp://localhost:24041"
-#define ZMQ_SERVER_SUB_ADRESS "tcp://localhost:24042"
+//#define ZMQ_SERVER_PUSH_ADRESS "tcp://localhost:24041"
+//#define ZMQ_SERVER_SUB_ADRESS "tcp://localhost:24042"
 
 #define ZMQ_SUB_FILTER_1 "translate?"
 #define ZMQ_PUSH_FILTER_1 "translate!"

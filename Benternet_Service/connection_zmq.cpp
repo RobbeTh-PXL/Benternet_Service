@@ -84,7 +84,6 @@ void connection_zmq::push_msg() {
 				std::ostringstream oss;
 				oss << ZMQ_PUSH_FILTER_1 << ">" << data.id << ">" << data.response;
 				std::string msg = oss.str();
-
 				push.send(zmq::buffer(msg), zmq::send_flags::none);
 				std::cout << "ZMQ TX: " << msg << std::endl;
 
@@ -99,7 +98,10 @@ void connection_zmq::push_msg() {
 void connection_zmq::send_heartbeat() {
 	std::cout << "[+] Heartbeat Thread started" << std::endl;
 	while (heartbeat.handle() != NULL) {
-		heartbeat.send(zmq::buffer("Heart"), zmq::send_flags::none);
+		std::ostringstream oss;
+		oss << ZMQ_HEARTBEAT_FILTER_1 << ">" << "Heart";
+		std::string msg = oss.str();
+		heartbeat.send(zmq::buffer(msg), zmq::send_flags::none);
 		// Sleep for 10 seconds
 		std::this_thread::sleep_for(std::chrono::seconds(10));
 	}
